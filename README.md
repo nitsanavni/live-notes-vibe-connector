@@ -13,8 +13,9 @@ Instead: a hook that runs when the agent is about to stop. The hook does not ret
 Nothing to copy: the hook is already in this repo, in `.vibe/hooks.toml`.
 
 1. Clone or pull this repo.
-2. Give it your agent link. Either put the link in the file `.vibe/agent-link` (git ignores it), or set `LIVE_NOTES_AGENT_LINK`. Never commit the link.
-3. Start Vibe in the repo folder and trust the folder when asked, so the hook may run.
+2. Give it your agent link: copy `.vibe/agent-link.example` to `.vibe/agent-link` and replace its one line with your link (the whole address, one line, nothing else). Git ignores `.vibe/agent-link`. Or set `LIVE_NOTES_AGENT_LINK` instead. Never commit the link.
+3. Check it without Vibe: run `try_hook.bat` (Windows). It waits; say something in the meeting; it prints one line of JSON and exits.
+4. Start Vibe in the repo folder and trust the folder when asked, so the hook may run.
 
 Python 3 is needed (standard library only). Optional settings: `LIVE_NOTES_AGENT_NAME` (default `vibe-agent`), `LIVE_NOTES_CURSOR_FILE` (default `.vibe/live-notes.cursor`), `LIVE_NOTES_MAX_WAIT_S` (default 1500).
 
