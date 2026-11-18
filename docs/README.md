@@ -7,3 +7,4 @@ Drawings. Click to see them rendered:
 - [2. Join](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/2-join.html)
 - [3. Follow](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/3-follow.html)
 - [4. Leave](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/4-leave.html)
+- [5. The development environment](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/5-dev-environment.html)
