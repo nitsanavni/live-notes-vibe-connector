@@ -1,18 +1,19 @@
 # To do
 
-**Next**
+**Next** (seen on 18 Nov, Vibe run in Claude's environment)
 
+- The 4th line in every turn is lost: the hook takes it, Vibe ignores it.
+- You cannot type to Vibe while the hook waits (up to 25 minutes).
+- The skill does not say how to publish a page or answer in the meeting.
+- The Live Notes guide says "use the follower", the skill says "do not poll". Likely the hang.
 - Fewer wakes: the hook wakes Vibe on every line.
-- Vibe hung twice in the test ("waiting for background work"). Find out why.
-- Run Vibe in Claude's environment, so Claude can test its own changes. Needs a Mistral key.
+- The cheapest model (`ministral-3b`) cannot follow the skill; `mistral-small` mostly can.
 
 **Then**
 
 - One plugin that holds the hook, the skill and the loop.
 - One prompt from the meeting sets everything up and joins.
 - Link and cursor per Vibe session, not one file per folder.
-- Check: the loop stays quiet while the hook waits.
-- Check: Vibe answers with a dot when no line is for it.
 
 **In Live Notes itself**
 
