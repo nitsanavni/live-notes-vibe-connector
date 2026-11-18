@@ -25,8 +25,13 @@ def make_server(feed):
 
         def do_GET(self):
             u = urlparse(self.path)
-            feed.queries.append((u.path, parse_qs(u.query)))
-            r = feed.responses.pop(0) if len(feed.responses) > 1 else feed.responses[0]
+            q = parse_qs(u.query)
+            feed.queries.append((u.path, q))
+            if "wait" in q and "after" not in q:
+                # The real service refuses this (seen 18 November 2026).
+                r = (400, {"error": "wait needs after=<cursor>"})
+            else:
+                r = feed.responses.pop(0) if len(feed.responses) > 1 else feed.responses[0]
             body = json.dumps(r[1]).encode()
             self.send_response(r[0])
             self.send_header("Content-Length", str(len(body)))
