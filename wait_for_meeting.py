@@ -95,7 +95,13 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
         pass
     link = env.get("LIVE_NOTES_AGENT_LINK", "").strip()
     if not link:
-        print("live-notes: LIVE_NOTES_AGENT_LINK is not set", file=sys.stderr)
+        try:
+            with open(os.path.join(".vibe", "agent-link"), encoding="utf-8") as f:
+                link = f.read().strip()
+        except OSError:
+            pass
+    if not link:
+        print("live-notes: no agent link (LIVE_NOTES_AGENT_LINK or .vibe/agent-link)", file=sys.stderr)
         return 0
     name = env.get("LIVE_NOTES_AGENT_NAME", "vibe-agent")
     cfile = env.get("LIVE_NOTES_CURSOR_FILE", os.path.join(".vibe", "live-notes.cursor"))

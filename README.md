@@ -10,24 +10,13 @@ Instead: a hook that runs when the agent is about to stop. The hook does not ret
 
 ## Setup (Windows, Vibe)
 
-1. Copy `wait_for_meeting.py` into your project folder. Copy the `[[hooks]]` entry from `hooks.toml.example` into your Vibe `hooks.toml`.
-2. Set the agent link. Use your own link, and never commit it.
+Nothing to copy: the hook is already in this repo, in `.vibe/hooks.toml`.
 
-   PowerShell:
+1. Clone or pull this repo.
+2. Give it your agent link. Either put the link in the file `.vibe/agent-link` (git ignores it), or set `LIVE_NOTES_AGENT_LINK`. Never commit the link.
+3. Start Vibe in the repo folder and trust the folder when asked, so the hook may run.
 
-   ```
-   $env:LIVE_NOTES_AGENT_LINK = "https://HOST/a/YOUR-CODE/"
-   ```
-
-   bash:
-
-   ```
-   export LIVE_NOTES_AGENT_LINK="https://HOST/a/YOUR-CODE/"
-   ```
-
-   Optional: `LIVE_NOTES_AGENT_NAME` (default `vibe-agent`), `LIVE_NOTES_CURSOR_FILE` (default `.vibe/live-notes.cursor`), `LIVE_NOTES_MAX_WAIT_S` (default 1500).
-3. Start Vibe in that folder and trust the folder when asked, so the hook may run.
-4. Python 3 is needed. The script uses only the standard library.
+Python 3 is needed (standard library only). Optional settings: `LIVE_NOTES_AGENT_NAME` (default `vibe-agent`), `LIVE_NOTES_CURSOR_FILE` (default `.vibe/live-notes.cursor`), `LIVE_NOTES_MAX_WAIT_S` (default 1500).
 
 ## How it behaves
 
