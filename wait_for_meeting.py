@@ -85,7 +85,7 @@ def build_reason(events):
         "New lines from the Live Notes meeting:\n"
         + "\n".join(lines)
         + "\nAnswer what is addressed to you on your meeting page; "
-        "otherwise do nothing and end your turn."
+        "otherwise reply with a single dot (.) and nothing else."
     )
 
 

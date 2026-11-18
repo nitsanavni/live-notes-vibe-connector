@@ -21,6 +21,10 @@ Things we may need. Not ordered, not promised. Add freely.
 
 ## The hook
 
+- When nothing is addressed to it, Vibe should answer with a dot only, not
+  "not addressed to me, ending my turn" (Peter, 18 Nov). The skill and the
+  hook now ask for that; see whether Vibe obeys.
+
 - One link file means one meeting for the whole folder (Nitsan, 18 Nov: "it
   should be per Vibe session instead of a singleton file"). Two Vibe sessions
   in the same folder would share the link and the cursor. Make both per
