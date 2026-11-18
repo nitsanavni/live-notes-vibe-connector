@@ -2,7 +2,6 @@
 
 **Next** (seen on 18 Nov, Vibe run in Claude's environment)
 
-- The 4th line in every turn is lost: the hook takes it, Vibe ignores it.
 - You cannot type to Vibe while the hook waits (up to 25 minutes).
 - The skill does not say how to publish a page or answer in the meeting.
 - The Live Notes guide says "use the follower", the skill says "do not poll". Likely the hang.

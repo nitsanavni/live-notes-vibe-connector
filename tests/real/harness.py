@@ -60,7 +60,7 @@ class Run:
         self.meeting = None  # (id, host_key) when we started it
         self.link = None
         self.session = None
-        self.records, self.offsets = {}, {}
+        self.records, self.seen, self.offsets = {}, {}, {}
         self.intents, self.results = {}, {}  # action_id -> (payload, first seen)
         self.prompts, self.last_prompt = [], 0
         self.failures = []
@@ -163,6 +163,7 @@ class Run:
                 if r.get("sequence") in self.records:
                     continue
                 self.records[r.get("sequence")] = r
+                self.seen[r.get("sequence")] = now
                 p = r.get("payload", {})
                 if r.get("type") == "action_intent" and p.get("kind") == "completion":
                     self.intents[p["action_id"]] = (json.dumps(p), now)
@@ -194,10 +195,17 @@ class Run:
         return tin, tout, (tin * PRICE_IN + tout * PRICE_OUT) * 100
 
     def answered(self, token):
-        """When the model's answer to an input holding token was first seen, or None."""
-        for text, _, res, seen in self.completions():
-            if token in text and res is not None:
-                return seen
+        """When the model's first answer after the input holding token was seen, or None.
+
+        Completion requests do not inline the text; the hook's result or the typed command does.
+        """
+        first = next((q for q in sorted(self.records) if token in json.dumps(self.records[q])), None)
+        if first is None:
+            return None
+        for q in sorted(self.records):
+            r = self.records[q]
+            if q > first and r.get("type") == "action_result" and r["payload"].get("action_id") in self.intents:
+                return self.seen[q]
         return None
 
     def loops(self):
@@ -215,11 +223,12 @@ class Run:
 
     # --- Live Notes ---
     def post(self, text):
+        t = time.time()
         code, d = http("POST", self.link + "chat?name=tester", {"text": text})
         if code != 200:
             raise Abort("post failed: %s %s" % (code, d))
         self.note("posted", text=text)
-        return time.time()
+        return t
 
     def pages(self):
         code, d = http("GET", self.link + "pages?name=tester")

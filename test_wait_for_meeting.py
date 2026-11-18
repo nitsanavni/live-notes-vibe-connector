@@ -27,9 +27,13 @@ def make_server(feed):
             u = urlparse(self.path)
             q = parse_qs(u.query)
             feed.queries.append((u.path, q))
-            if "wait" in q and "after" not in q:
-                # The real service refuses this (seen 18 November 2026).
+            # Refuse what the real service refuses (seen 18 November 2026).
+            if not q.get("name") or q["name"][0] in ("agent", "your-name", "claude", "codex"):
+                r = (400, {"error": "name needed"})
+            elif "wait" in q and "after" not in q:
                 r = (400, {"error": "wait needs after=<cursor>"})
+            elif "wait" in q and not 1 <= int(q["wait"][0]) <= 30:
+                r = (400, {"error": "wait is 1-30"})
             else:
                 r = feed.responses.pop(0) if len(feed.responses) > 1 else feed.responses[0]
             body = json.dumps(r[1]).encode()
@@ -58,6 +62,7 @@ class T(unittest.TestCase):
         self.env = {
             "LIVE_NOTES_AGENT_LINK": "http://127.0.0.1:%d/a/secret/" % self.srv.server_port,
             "LIVE_NOTES_CURSOR_FILE": self.cf,
+            "LIVE_NOTES_WAKES_FILE": os.path.join(self.dir, "w.wakes"),
             "LIVE_NOTES_MAX_WAIT_S": "5",
             "LIVE_NOTES_POLL_S": "1",
         }
@@ -65,11 +70,11 @@ class T(unittest.TestCase):
     def tearDown(self):
         self.srv.shutdown()
 
-    def run_hook(self, **env):
+    def run_hook(self, payload=None, **env):
         e = dict(self.env, **env)
         out, err = io.StringIO(), io.StringIO()
         old = sys.stdin
-        sys.stdin = io.StringIO("{}")
+        sys.stdin = io.StringIO(json.dumps(payload or {}))
         try:
             with redirect_stdout(out), redirect_stderr(err):
                 rc = w.run(e, sleep=lambda s: None)
@@ -129,6 +134,22 @@ class T(unittest.TestCase):
         open(self.cf, "w").write("c5")
         self.feed.responses = [(403, {})]
         self.assertEqual(self.run_hook(), "")
+
+    def test_fourth_wake_in_a_turn_takes_nothing(self):
+        # Vibe ignores a 4th deny in one turn: the line it carried would be lost.
+        os.makedirs(os.path.dirname(self.cf))
+        open(self.cf, "w").write("c5")
+        self.feed.responses = [(200, {"next": "c%d" % i, "events": [speech(i, text="line %d" % i)]})
+                               for i in range(6, 11)]
+        turn = {"session_id": "s1", "turn_id": "t1"}
+        for i in range(6, 9):
+            self.assertIn("line %d" % i, json.loads(self.run_hook(turn))["reason"])
+        asked = len(self.feed.queries)
+        self.assertEqual(self.run_hook(turn), "")
+        self.assertEqual(len(self.feed.queries), asked)  # did not read
+        self.assertEqual(open(self.cf).read(), "c8")  # did not move the cursor
+        out = self.run_hook({"session_id": "s1", "turn_id": "t2"})  # the loop's next turn
+        self.assertIn("line 9", json.loads(out)["reason"])
 
     def test_missing_link_accepts(self):
         self.assertEqual(self.run_hook(LIVE_NOTES_AGENT_LINK=""), "")

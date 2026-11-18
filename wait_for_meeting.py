@@ -13,6 +13,7 @@ import urllib.parse
 import urllib.request
 
 POLL_S = 25
+MAX_WAKES = 3  # Vibe ignores a 4th deny in one turn (_MAX_POST_AGENT_RETRIES)
 STOP_CODES = (401, 403, 404, 410)  # revoked / gone: accept the turn
 
 
@@ -53,6 +54,16 @@ def save_cursor(path, cursor):
             f.write(str(cursor))
     except OSError as e:
         print("live-notes: cannot save cursor: %s" % e, file=sys.stderr)
+
+
+def wakes_used(path, turn):
+    """Wakes already given in this turn: the file holds '<turn id> <count>'."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            t, n = f.read().split()
+        return int(n) if t == turn else 0
+    except (OSError, ValueError):
+        return 0
 
 
 def who(ev):
@@ -126,6 +137,13 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
         return 0
     name = env.get("LIVE_NOTES_AGENT_NAME", "vibe-agent")
     cfile = env.get("LIVE_NOTES_CURSOR_FILE", os.path.join(".vibe", "live-notes.cursor"))
+    wfile = env.get("LIVE_NOTES_WAKES_FILE", os.path.join(".vibe", "live-notes.wakes"))
+    turn = str(payload.get("turn_id") or "")
+    used = wakes_used(wfile, turn) if turn else 0
+    if used >= MAX_WAKES:
+        # Leave the line for the loop's next turn, where a deny counts again.
+        log(env, "capped", turn_id=turn)
+        return 0
     try:
         max_wait = float(env.get("LIVE_NOTES_MAX_WAIT_S", "1500"))
     except ValueError:
@@ -163,6 +181,8 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
             wake = [e for e in d.get("events") or [] if is_wake(e, name)]
             if wake:
                 save_cursor(cfile, nxt)
+                if turn:
+                    save_cursor(wfile, "%s %d" % (turn, used + 1))
                 print(json.dumps({"decision": "deny", "reason": build_reason(wake)}))
                 log(env, "deny", turn_id=payload.get("turn_id"), texts=[e.get("text") for e in wake])
                 return 0
