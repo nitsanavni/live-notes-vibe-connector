@@ -21,6 +21,11 @@ Things we may need. Not ordered, not promised. Add freely.
 
 ## The hook
 
+- One link file means one meeting for the whole folder (Nitsan, 18 Nov: "it
+  should be per Vibe session instead of a singleton file"). Two Vibe sessions
+  in the same folder would share the link and the cursor. Make both per
+  session; first find out whether Vibe tells a hook which session it runs in.
+
 - It wakes on every line, so the 3 wakes per turn are used up in seconds.
   Options: wake only on the agent's name; use the service's Save tokens mode;
   use a small model as a waker (the "Jev waker").
