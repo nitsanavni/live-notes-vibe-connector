@@ -21,6 +21,9 @@ Never commit your agent link.
 
 Drawings: see [docs](docs/).
 
-## Check without Vibe
+## Tests
 
-`try_hook.bat` runs the hook once by hand. `test.bat` runs the unit tests.
+- Fast, no Vibe, no money: `python3 -m unittest` (or `test.bat`). `try_hook.bat` runs the hook once by hand.
+- Real, Vibe + Mistral + a test meeting, about 1 cent: `python3 tests/real/run.py SCENARIO --out DIR`.
+  It starts and ends its own meeting, checks state (files, loops, journal, Live Notes), and tears
+  everything down even when the model does not. Needs `vibe` and `hc`. Scenarios: `--help`.

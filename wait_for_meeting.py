@@ -89,12 +89,31 @@ def build_reason(events):
     )
 
 
+def read_payload():
+    try:
+        d = json.loads(sys.stdin.read() or "{}")
+        return d if isinstance(d, dict) else {}
+    except Exception:
+        return {}
+
+
+def log(env, ev, **kw):
+    """One JSON line per hook step, only when LIVE_NOTES_HOOK_LOG names a file (tests)."""
+    path = env.get("LIVE_NOTES_HOOK_LOG")
+    if not path:
+        return
+    try:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(dict(t=time.time(), ev=ev, pid=os.getpid(), **kw)) + "\n")
+    except OSError:
+        pass
+
+
 def run(env=None, sleep=time.sleep, clock=time.monotonic):
     env = os.environ if env is None else env
-    try:
-        sys.stdin.read()
-    except Exception:
-        pass
+    payload = read_payload()
+    log(env, "start", session_id=payload.get("session_id"), turn_id=payload.get("turn_id"),
+        payload={k: v for k, v in payload.items() if k != "response_text"})
     link = env.get("LIVE_NOTES_AGENT_LINK", "").strip()
     if not link:
         try:
@@ -145,6 +164,7 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
             if wake:
                 save_cursor(cfile, nxt)
                 print(json.dumps({"decision": "deny", "reason": build_reason(wake)}))
+                log(env, "deny", turn_id=payload.get("turn_id"), texts=[e.get("text") for e in wake])
                 return 0
             if nxt != cursor:
                 cursor = nxt
@@ -152,6 +172,7 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
             if d.get("ended_at"):
                 raise Stop()
     except Stop:
+        log(env, "accept", turn_id=payload.get("turn_id"))
         return 0
 
 
