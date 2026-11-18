@@ -6,6 +6,7 @@ reason) or nothing (Vibe accepts the turn). Standard library only.
 """
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -13,6 +14,7 @@ import urllib.parse
 import urllib.request
 
 POLL_S = 25
+CONTEXT = 12  # lines delivered with a wake at most: the line that names the agent and those before it
 MAX_WAKES = 3  # Vibe ignores a 4th deny in one turn (_MAX_POST_AGENT_RETRIES)
 STOP_CODES = (401, 403, 404, 410)  # revoked / gone: accept the turn
 
@@ -81,7 +83,24 @@ def who(ev):
     return str(f or "?")
 
 
-def is_wake(ev, me):
+def wake_words(env, me):
+    """None: wake on every line. Default: the agent's name and its first part (vibe-agent, vibe)."""
+    v = env.get("LIVE_NOTES_WAKE_ON", "").strip()
+    if v.lower() == "all":
+        return None
+    if v:
+        return [w.strip().lower() for w in v.split(",") if w.strip()]
+    return sorted({me.lower(), me.split("-")[0].lower()})
+
+
+def calls_me(ev, me, words):
+    if me.lower() in [str(n).lower() for n in (ev.get("to") or []) + (ev.get("mentions") or [])]:
+        return True
+    text = str(ev.get("text")).lower()
+    return any(re.search(r"(?<![\w-])%s(?![\w-])" % re.escape(w), text) for w in words)
+
+
+def is_line(ev, me):
     if ev.get("type") not in ("speech", "chat"):
         return False
     if ev.get("in_scope") is False:
@@ -158,6 +177,8 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
     deadline = clock() + longest
     backoff = 1.0
     cursor = load_cursor(cfile)
+    words = wake_words(env, name)
+    heard = []
 
     try:
         while True:
@@ -184,8 +205,10 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
                 backoff = min(backoff * 2, 30.0)
                 continue
             nxt = d.get("next") or d.get("cursor") or cursor
-            wake = [e for e in d.get("events") or [] if is_wake(e, name)]
-            if wake:
+            lines = [e for e in d.get("events") or [] if is_line(e, name)]
+            heard = (heard + lines)[-CONTEXT:]
+            if lines and (words is None or any(calls_me(e, name, words) for e in lines)):
+                wake = heard
                 save_cursor(cfile, nxt)
                 if turn:
                     save_cursor(wfile, "%s %d" % (turn, used + 1))

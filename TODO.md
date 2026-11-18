@@ -2,7 +2,7 @@
 
 **Next** (seen on 18 Nov, Vibe run in Claude's environment)
 
-- Fewer wakes: the hook wakes Vibe on every line.
+- Lines heard before a wake, in an earlier hook run, are not sent along (only those of the same run).
 - Windows: `.vibe/config.toml` allows the script for POSIX bash only, not Git Bash or PowerShell (not tested).
 - The cheapest model (`ministral-3b`) cannot follow the skill; `mistral-small` mostly can.
 

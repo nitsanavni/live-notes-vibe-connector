@@ -68,6 +68,7 @@ class T(unittest.TestCase):
             "LIVE_NOTES_WAKES_FILE": os.path.join(self.dir, "w.wakes"),
             "LIVE_NOTES_MAX_WAIT_S": "5",
             "LIVE_NOTES_POLL_S": "1",
+            "LIVE_NOTES_WAKE_ON": "all",
         }
 
     def tearDown(self):
@@ -174,6 +175,30 @@ class T(unittest.TestCase):
         p = subprocess.run(["/bin/sh", "-c", cmd], cwd=here, env=env, input="{}", capture_output=True,
                            text=True, timeout=30)
         self.assertEqual(json.loads(p.stdout)["decision"], "deny", p.stderr)
+
+    def test_wakes_only_on_its_name_by_default(self):
+        os.makedirs(os.path.dirname(self.cf))
+        open(self.cf, "w").write("c5")
+        self.feed.responses = [(200, {"next": "c6", "events": [speech(6, text="lunch at one?")]}),
+                               (200, {"next": "c7", "events": [speech(7, text="Vibe, what was that?")]})]
+        out = self.run_hook(LIVE_NOTES_WAKE_ON="")
+        reason = json.loads(out)["reason"]
+        self.assertIn("Vibe, what was that?", reason)
+        self.assertIn("lunch at one?", reason)  # earlier line, as context
+        self.assertEqual(open(self.cf).read(), "c7")
+
+    def test_no_wake_without_its_name(self):
+        os.makedirs(os.path.dirname(self.cf))
+        open(self.cf, "w").write("c5")
+        self.feed.responses = [(200, {"next": "c6", "events": [speech(6, text="vibes are good today")]})]
+        self.assertEqual(self.run_hook(LIVE_NOTES_WAKE_ON="", LIVE_NOTES_MAX_WAIT_S="2"), "")
+        self.assertEqual(open(self.cf).read(), "c6")
+
+    def test_wakes_on_to_or_mention(self):
+        os.makedirs(os.path.dirname(self.cf))
+        open(self.cf, "w").write("c5")
+        self.feed.responses = [(200, {"next": "c6", "events": [speech(6, text="and you?", to=["vibe-agent"])]})]
+        self.assertIn("and you?", json.loads(self.run_hook(LIVE_NOTES_WAKE_ON=""))["reason"])
 
     def test_missing_link_accepts(self):
         self.assertEqual(self.run_hook(LIVE_NOTES_AGENT_LINK=""), "")
