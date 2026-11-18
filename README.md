@@ -19,7 +19,15 @@ Never commit your agent link.
 - **Loop**: starts a new turn every 30 seconds, so the hook can wait again.
 - **Skill** (`.vibe/skills/live-notes`): joins, starts the loop, leaves.
 
-Drawings: `docs/drawings/index.html`.
+## Drawings
+
+Click to see them rendered:
+
+- [All drawings](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/index.html)
+- [1. The parts](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/1-parts.html)
+- [2. Join](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/2-join.html)
+- [3. Follow](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/3-follow.html)
+- [4. Leave](https://htmlpreview.github.io/?https://github.com/nitsanavni/live-notes-vibe-connector/blob/main/docs/drawings/4-leave.html)
 
 ## Check without Vibe
 
