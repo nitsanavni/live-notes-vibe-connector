@@ -106,5 +106,53 @@ def wake4(run):
     report_lines(run, lines)
 
 
+ALLOWED = ("vibe", "timeout --foreground", "bash -c export", "wait_for_meeting.py")
+
+
+def strays(run):
+    return [c for _, c in run.ours() if not any(a in c for a in ALLOWED)]
+
+
+def join(run):
+    """Bugs 3-5: join with the skill, answer on the page, stop. All checked in Live Notes and files."""
+    link_file = os.path.join(run.work, ".vibe", "agent-link")
+    run.start_vibe()
+    run.send("Join the meeting with the live-notes skill. Agent link: " + run.link)
+    joined = run.wait(lambda: run.loops() and any(p.get("name") == AGENT for p in run.pages())
+                      and hook_waiting(run), 180, "joined")
+    run.check(any(p.get("name") == AGENT for p in run.pages()), "after join: the agent's page exists")
+    run.check(bool(run.loops()), "after join: the loop is stored")
+    run.check(not strays(run), "after join: no background process (%s)" % strays(run))
+    calls = run.tool_calls()
+    run.note("tool calls", calls=[(n, a.replace(run.link, "<LINK>")[:160]) for n, a in calls])
+    run.check(not any(w in a for _, a in calls for w in ("wait=", "/stream", "follow")), "no wait, stream or follower call")
+    run.check(all("live_notes.py" in a for _, a in calls if run.link in a or "railway.app" in a),
+              "the link is used only through live_notes.py (no guide fetched)")
+    if not joined:
+        raise Abort("did not join")
+    tok = token()
+    run.post("%s, please add the word %s to your page." % (AGENT, tok))
+    run.check(run.wait(lambda: tok in run.page_text(AGENT), 150, "page changed"), "a line to the agent changed its page")
+    run.wait(lambda: hook_waiting(run), 90, "hook waiting")
+    if os.environ.get("REAL_ESC_FIRST", "1") == "1":
+        hc_keys(run, "esc")  # until bug 2 is fixed, typing waits for the hook
+    run.send("Stop following the meeting.")
+    run.wait(lambda: not os.path.exists(link_file) and not run.loops() and AGENT not in run.participants(),
+             150, "stopped")
+    run.check(not os.path.exists(link_file), "after stop: link file gone")
+    run.check(not [f for f in os.listdir(os.path.join(run.work, ".vibe")) if f.startswith("live-notes")],
+              "after stop: cursor and state files gone")
+    run.check(not run.loops(), "after stop: no stored loop")
+    run.check(AGENT not in run.participants(), "after stop: the agent left the meeting")
+    run.check(not run.prompts or run.allow_prompts, "no permission prompt")
+    run.note("prompts", count=len(run.prompts))
+
+
+def hc_keys(run, *keys):
+    from harness import hc
+    hc("keys", run.name, *keys)
+    run.note("keys", keys=keys)
+
+
 if __name__ == "__main__":
-    main({"smoke": smoke, "misbehave": misbehave, "wake4": wake4})
+    main({"smoke": smoke, "misbehave": misbehave, "wake4": wake4, "join": join})

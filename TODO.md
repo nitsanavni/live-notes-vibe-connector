@@ -3,9 +3,8 @@
 **Next** (seen on 18 Nov, Vibe run in Claude's environment)
 
 - You cannot type to Vibe while the hook waits (up to 25 minutes).
-- The skill does not say how to publish a page or answer in the meeting.
-- The Live Notes guide says "use the follower", the skill says "do not poll". Likely the hang.
 - Fewer wakes: the hook wakes Vibe on every line.
+- Each `python live_notes.py` call asks for permission.
 - The cheapest model (`ministral-3b`) cannot follow the skill; `mistral-small` mostly can.
 
 **Then**
@@ -18,6 +17,7 @@
 **In Live Notes itself**
 
 - The waker on the server: optional, off by default, wake phrases per agent.
+- Serve this kit from the agent link, so an agent without the repo gets it with one download.
 
 **Decide**
 

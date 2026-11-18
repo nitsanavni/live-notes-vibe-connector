@@ -62,7 +62,7 @@ class Run:
         self.session = None
         self.records, self.seen, self.offsets = {}, {}, {}
         self.intents, self.results = {}, {}  # action_id -> (payload, first seen)
-        self.prompts, self.last_prompt = [], 0
+        self.prompts, self.last_prompt = [], ("", 0)
         self.failures = []
         self.started_vibe = False
 
@@ -248,10 +248,11 @@ class Run:
             raise Abort("time limit %d s" % self.limit)
         self.poll_journal()
         s = self.screen() if self.started_vibe else ""
-        if "Allow once" in s and time.time() - self.last_prompt > 2:
-            self.last_prompt = time.time()
-            self.prompts.append(s)
-            self.note("permission prompt", allowed=self.allow_prompts, screen=_prompt_text(s))
+        text = _prompt_text(s) if "Allow once" in s else ""
+        if text and (text != self.last_prompt[0] or time.time() - self.last_prompt[1] > 8):
+            self.last_prompt = (text, time.time())
+            self.prompts.append(text)
+            self.note("permission prompt", allowed=self.allow_prompts, screen=text)
             if not self.allow_prompts:
                 raise Abort("permission prompt on screen")
             hc("keys", self.name, "enter")
@@ -275,9 +276,15 @@ class Run:
     # --- teardown ---
     def ours(self):
         """Processes this run started: cwd or command line inside our folder, or Vibe's own."""
-        found = []
+        found, mine, p = [], {os.getpid()}, os.getpid()
+        while p > 1:  # our own ancestors (the shell that started this test) are not Vibe's
+            try:
+                p = int(open("/proc/%d/stat" % p).read().rsplit(")", 1)[1].split()[1])
+            except (OSError, ValueError, IndexError):
+                break
+            mine.add(p)
         for pid in os.listdir("/proc"):
-            if not pid.isdigit() or int(pid) == os.getpid():
+            if not pid.isdigit() or int(pid) in mine:
                 continue
             try:
                 cmd = open("/proc/%s/cmdline" % pid, "rb").read().replace(b"\0", b" ").decode()
@@ -359,7 +366,8 @@ def _prompt_text(s):
     """The lines of a permission prompt above its choices, without the box."""
     lines = [l.strip(" \u2502\u250c\u2510\u2500") for l in s.splitlines()]
     i = next((n for n, l in enumerate(lines) if "Allow once" in l), len(lines))
-    return " | ".join(l for l in lines[max(0, i - 8):i] if l)
+    top = next((n for n in range(i - 1, max(0, i - 10), -1) if "Permission" in lines[n]), max(0, i - 8))
+    return " | ".join(l for l in lines[top:i] if l)
 
 
 def main(scenarios):

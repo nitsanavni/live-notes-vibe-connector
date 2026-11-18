@@ -21,3 +21,4 @@ env/
 .vibe/agent-link
 .vibe/live-notes.cursor
 .vibe/live-notes.wakes
+.vibe/live-notes/

@@ -95,8 +95,9 @@ def build_reason(events):
     return (
         "New lines from the Live Notes meeting:\n"
         + "\n".join(lines)
-        + "\nAnswer what is addressed to you on your meeting page; "
-        "otherwise reply with a single dot (.) and nothing else."
+        + "\nAnswer what is addressed to you on your page: write .vibe/live-notes/page.md, then run "
+        "python live_notes.py publish .vibe/live-notes/page.md (skill live-notes). "
+        "Otherwise reply with a single dot (.) and nothing else."
     )
 
 
@@ -135,7 +136,7 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
     if not link:
         print("live-notes: no agent link (LIVE_NOTES_AGENT_LINK or .vibe/agent-link)", file=sys.stderr)
         return 0
-    name = env.get("LIVE_NOTES_AGENT_NAME", "vibe-agent")
+    name = env.get("LIVE_NOTES_AGENT_NAME") or load_cursor(os.path.join(".vibe", "live-notes", "name")) or "vibe-agent"
     cfile = env.get("LIVE_NOTES_CURSOR_FILE", os.path.join(".vibe", "live-notes.cursor"))
     wfile = env.get("LIVE_NOTES_WAKES_FILE", os.path.join(".vibe", "live-notes.wakes"))
     turn = str(payload.get("turn_id") or "")
