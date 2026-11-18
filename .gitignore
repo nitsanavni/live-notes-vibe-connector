@@ -1,3 +1,22 @@
+# Python
 __pycache__/
-.vibe/live-notes.cursor
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+env/
+
+# Local to each person: never commit
 .vibe/agent-link
+.vibe/live-notes.cursor
