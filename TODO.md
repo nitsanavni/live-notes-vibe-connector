@@ -27,8 +27,10 @@ Things we may need. Not ordered, not promised. Add freely.
 - The limit of 3 wakes per turn is a constant in Vibe
   (`_MAX_POST_AGENT_RETRIES`), not a setting. Ask Mistral to make it a setting,
   or live with it through the loop.
-- Test the hook together with `/loop`: what happens when the loop fires while
-  the hook is still waiting?
+- The loop must not fire while the hook is still waiting (Peter: a possible
+  race). Vibe's `cron` tool says its prompts "run only while the session is
+  live and you are idle", so it should hold back; whether a turn that waits in
+  the hook counts as busy is read from the source, not tested. Test it.
 - The unit tests print a warning about files that were not closed (seen on
   Peter's machine). Not looked at.
 - `test.bat` and `try_hook.bat` were written on Linux and run only on Peter's
