@@ -11,6 +11,7 @@
 
 **Then**
 
+- More hooks, so a line from the team reaches Vibe while it is working, not only when its turn ends (Nitsan, 18 Nov: not yet).
 - One plugin that holds the hook, the skill and the loop.
 - One prompt from the meeting sets everything up and joins.
 - Link and cursor per Vibe session, not one file per folder.
