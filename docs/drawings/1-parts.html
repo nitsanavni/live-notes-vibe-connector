@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark"><title>Vibe and Live Notes: The parts</title><link rel="stylesheet" href="style.css"></head><body><main><nav class="nav"><span></span><a href="index.html">Index</a><a href="2-join.html">2. Join →</a></nav><h1>1. The parts</h1><p class="lead">Who is who, and what talks to what.</p><div class="fig"><svg style="min-width:780px" viewBox="0 0 1090 690" role="img" aria-label="The parts: Peter's machine with Peter, Vibe, the skill, the hook, the loop and the agent-link file; the Live Notes service with the meeting feed and the agent's page; and the people in the meeting."><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path class="head" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<title>The parts of the connector</title>
+<rect class="grp-pc" x="20" y="30" width="580" height="530" rx="22"/><text x="42" y="60" class="g start">Peter's machine</text>
+<rect class="grp-ln" x="720" y="30" width="260" height="530" rx="22"/><text x="742" y="60" class="g start">Live Notes service</text>
+<rect class="box" x="60" y="80" width="160" height="56" rx="28"/><text x="140" y="113.5" class="h mid">Peter</text>
+<rect class="c-pc" x="250" y="230" width="180" height="64" rx="14"/><text x="340" y="259" class="h mid">Vibe</text><text x="340" y="279" class="s mid">(the agent)</text>
+<rect class="c-pc" x="60" y="350" width="160" height="56" rx="14"/><text x="140" y="375" class="h mid">skill</text><text x="140" y="395" class="s mid">live-notes</text>
+<rect class="c-loop" x="300" y="350" width="160" height="56" rx="14"/><text x="380" y="375" class="h mid">loop</text><text x="380" y="395" class="s mid">(cron tool)</text>
+<rect class="c-pc" x="60" y="470" width="190" height="56" rx="14"/><text x="155" y="495" class="h mid">.vibe/agent-link</text><text x="155" y="515" class="s mid">(file)</text>
+<rect class="c-hook" x="340" y="470" width="200" height="56" rx="14"/><text x="440" y="495" class="h mid">hook</text><text x="440" y="515" class="s mid">wait_for_meeting.py</text>
+<rect class="c-ln" x="750" y="100" width="200" height="56" rx="14"/><text x="850" y="133.5" class="h mid">agent’s page</text>
+<rect class="c-ln" x="750" y="470" width="200" height="56" rx="14"/><text x="850" y="503.5" class="h mid">meeting feed</text>
+<rect class="box" x="760" y="600" width="180" height="48" rx="24"/><text x="850" y="629.5" class="h mid">People in the meeting</text>
+<path class="arrow" marker-end="url(#ah)" d="M220,108 H340 V230"/><text x="232" y="98" class="m start">join the meeting</text>
+<path class="arrow" marker-end="url(#ah)" d="M250,262 H140 V350"/><text x="195" y="252" class="m mid">reads</text>
+<path class="arrow" marker-end="url(#ah)" d="M140,406 V470"/><text x="152" y="443" class="m start">writes</text>
+<path class="arrow" marker-end="url(#ah)" d="M220,378 H300"/><text x="260" y="368" class="m mid">starts</text>
+<path class="arrow" marker-end="url(#ah)" d="M380,350 V294"/><text x="368" y="326" class="m end">starts a new turn</text>
+<path class="arrow" marker-end="url(#ah)" d="M340,498 H250"/><text x="295" y="488" class="m mid">needs</text>
+<path class="arrow" marker-end="url(#ah)" d="M540,498 H750"/><text x="660" y="488" class="m mid">waits for lines</text>
+<path class="arrow" marker-end="url(#ah)" d="M520,470 V282 H430"/><text x="508" y="440" class="m end">hands lines over</text>
+<path class="arrow" marker-end="url(#ah)" d="M430,246 H570 V128 H750"/><text x="515" y="236" class="m mid">answers</text>
+<path class="arrow" marker-end="url(#ah)" d="M850,600 V526"/><text x="862" y="585" class="m start">talk</text>
+<path class="arrow" marker-end="url(#ah)" d="M940,624 H1020 V128 H950"/><text x="1032" y="380" class="m start">read</text>
+<g transform="translate(40 596)"><rect class="c-pc" x="0" y="0" width="22" height="16" rx="5"/><text x="32" y="14" class="s start">on the machine</text>
+<rect class="c-hook" x="0" y="26" width="22" height="16" rx="5"/><text x="32" y="40" class="s start">the hook</text>
+<rect class="c-loop" x="0" y="52" width="22" height="16" rx="5"/><text x="32" y="66" class="s start">the loop</text></g>
+</svg></div><p class="hint">On a narrow screen, scroll the drawing sideways.</p><h2>In words</h2><ol class="steps"><li>Peter tells Vibe: "join the meeting".</li><li>Vibe reads the skill.</li><li>The skill writes the agent-link file, and starts the loop.</li><li>The hook needs the agent-link file. It waits for lines on the meeting feed and hands them over to Vibe.</li><li>The loop starts a new turn in Vibe.</li><li>Vibe answers on the agent’s page.</li><li>People in the meeting talk on the feed and read the page.</li></ol><div class="note"><b>What is tested.</b> Only the hook has run in Vibe. The skill, the loop next to the hook, and leaving are written but not tried.</div><nav class="nav" style="margin-top:28px"><span></span><a href="index.html">Index</a><a href="2-join.html">2. Join →</a></nav></main></body></html>

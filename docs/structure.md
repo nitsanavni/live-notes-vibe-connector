@@ -1,3 +1,5 @@
+Hand-drawn versions of these four drawings: [drawings/index.html](drawings/index.html).
+
 # How Vibe joins, follows and leaves a meeting
 
 Four drawings, high level. The same parts appear in each.
