@@ -122,7 +122,8 @@ def build_reason(events):
     return (
         "New lines from the Live Notes meeting:\n"
         + "\n".join(lines)
-        + "\nAnswer what is addressed to you on your page: write .vibe/live-notes/page.md, then run "
+        + "\nAnswer what is addressed to you on your page: write it to .vibe/live-notes/page.md with your "
+        "write_file tool, then run "
         "python live_notes.py publish .vibe/live-notes/page.md (skill live-notes). "
         "Otherwise reply with a single dot (.) and nothing else."
     )
@@ -164,8 +165,11 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
         print("live-notes: no agent link (LIVE_NOTES_AGENT_LINK or .vibe/agent-link)", file=sys.stderr)
         return 0
     name = env.get("LIVE_NOTES_AGENT_NAME") or load_cursor(os.path.join(".vibe", "live-notes", "name")) or "vibe-agent"
-    cfile = env.get("LIVE_NOTES_CURSOR_FILE", os.path.join(".vibe", "live-notes.cursor"))
-    wfile = env.get("LIVE_NOTES_WAKES_FILE", os.path.join(".vibe", "live-notes.wakes"))
+    # One cursor and wake count per Vibe session; the link stays per folder (join writes it first).
+    sid = re.sub(r"[^A-Za-z0-9_-]", "", str(payload.get("session_id") or "")) or "default"
+    state = os.path.join(".vibe", "live-notes")
+    cfile = env.get("LIVE_NOTES_CURSOR_FILE", os.path.join(state, sid + ".cursor"))
+    wfile = env.get("LIVE_NOTES_WAKES_FILE", os.path.join(state, sid + ".wakes"))
     turn = str(payload.get("turn_id") or "")
     used = wakes_used(wfile, turn) if turn else 0
     if used >= MAX_WAKES:

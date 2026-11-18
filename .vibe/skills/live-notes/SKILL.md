@@ -29,7 +29,7 @@ the agent link or its guide. The hook and the loop do the listening.
 ## When meeting lines arrive
 
 - A line addressed to you: write your answer, in short Markdown, to
-  `.vibe/live-notes/page.md`, then run
+  `.vibe/live-notes/page.md` with your `write_file` tool, then run
   `python live_notes.py publish .vibe/live-notes/page.md`.
   Your page is the whole file: keep what still matters, say first what you understood.
 - Nothing for you: reply with a single dot (.) and nothing else.

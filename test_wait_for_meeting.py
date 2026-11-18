@@ -200,6 +200,23 @@ class T(unittest.TestCase):
         self.feed.responses = [(200, {"next": "c6", "events": [speech(6, text="and you?", to=["vibe-agent"])]})]
         self.assertIn("and you?", json.loads(self.run_hook(LIVE_NOTES_WAKE_ON=""))["reason"])
 
+    def test_two_sessions_keep_two_cursors(self):
+        old = os.getcwd()
+        os.chdir(self.dir)
+        try:
+            env = {k: v for k, v in self.env.items() if k not in ("LIVE_NOTES_CURSOR_FILE", "LIVE_NOTES_WAKES_FILE")}
+            self.env = env
+            self.feed.responses = [(200, {"cursor": "a1", "events": []}), (200, {"next": "a2", "events": [speech(2)]}),
+                                   (200, {"cursor": "b1", "events": []}), (200, {"next": "b2", "events": [speech(3)]})]
+            self.run_hook({"session_id": "s1", "turn_id": "t1"})
+            self.run_hook({"session_id": "s2", "turn_id": "t9"})
+            state = os.path.join(".vibe", "live-notes")
+            self.assertEqual(open(os.path.join(state, "s1.cursor")).read(), "a2")
+            self.assertEqual(open(os.path.join(state, "s2.cursor")).read(), "b2")
+            self.assertEqual(open(os.path.join(state, "s1.wakes")).read(), "t1 1")
+        finally:
+            os.chdir(old)
+
     def test_missing_link_accepts(self):
         self.assertEqual(self.run_hook(LIVE_NOTES_AGENT_LINK=""), "")
 

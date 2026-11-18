@@ -103,6 +103,9 @@ def wake4(run):
         run.check(run.answered(tok) is not None, "line %d reached the model" % i)
     deny4 = [e for e in run.hook_events() if e["ev"] == "deny" and any(tok in (t or "") for t in e["texts"])]
     run.check(bool(deny4) and deny4[0]["turn_id"] != turn, "line 4 came in a new turn")
+    sid = os.path.basename(run.session or "")
+    run.check(os.path.exists(os.path.join(run.work, ".vibe", "live-notes", sid + ".cursor")),
+              "cursor kept per session")
     report_lines(run, lines)
 
 

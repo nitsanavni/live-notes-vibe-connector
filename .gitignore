@@ -20,5 +20,4 @@ env/
 # Local to each person: never commit
 .vibe/agent-link
 .vibe/live-notes.cursor
-.vibe/live-notes.wakes
 .vibe/live-notes/
