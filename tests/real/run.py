@@ -106,6 +106,30 @@ def wake4(run):
     report_lines(run, lines)
 
 
+def typing(run):
+    """Bug 2: text typed while the hook waits is handled within max wait + loop + margin."""
+    arm(run)
+    limit = float(os.environ.get("REAL_TYPE_LIMIT_S", "105"))  # 60 s hook + 30 s loop + 15 s
+    tok = token()
+    typed = time.time()
+    run.send("Reply with the word %s and nothing else." % tok)
+    run.wait(lambda: run.answered(tok), limit + 15, "typed text handled")
+    ans = run.answered(tok)
+    run.note("timing", typed_to_answer_s=ans and round(ans - typed, 1))
+    run.check(ans is not None and ans - typed <= limit, "typed text handled within %d s" % limit)
+    idle = float(os.environ.get("REAL_IDLE_S", "0"))  # watch empty loop turns, for their cost
+    if ans and idle:
+        n0 = len(run.completions())
+        run.wait(lambda: False, idle, "idle")
+        turns = run.completions()[n0:]
+        use = [((r or {}).get("result", {}).get("result", {}) or {}).get("usage") or {} for _, _, r, _ in turns]
+        tin = sum(u.get("input_tokens", 0) for u in use)
+        tout = sum(u.get("output_tokens", 0) for u in use)
+        run.note("idle cost", seconds=idle, empty_turns=len(turns),
+                 tokens_in_per_turn=tin // max(1, len(turns)), tokens_out_per_turn=tout // max(1, len(turns)),
+                 cents_per_idle_minute=round((tin * 0.1e-6 + tout * 0.3e-6) * 100 * 60 / idle, 3))
+
+
 ALLOWED = ("vibe", "timeout --foreground", "bash -c export", "wait_for_meeting.py")
 
 
@@ -155,4 +179,4 @@ def hc_keys(run, *keys):
 
 
 if __name__ == "__main__":
-    main({"smoke": smoke, "misbehave": misbehave, "wake4": wake4, "join": join})
+    main({"smoke": smoke, "misbehave": misbehave, "wake4": wake4, "join": join, "type": typing})

@@ -151,6 +151,12 @@ class T(unittest.TestCase):
         out = self.run_hook({"session_id": "s1", "turn_id": "t2"})  # the loop's next turn
         self.assertIn("line 9", json.loads(out)["reason"])
 
+    def test_waits_at_most_60_s_by_default(self):
+        # Typed text waits while the hook waits: end the turn after a minute; the loop re-arms it.
+        self.assertEqual(w.max_wait({}), 60.0)
+        self.assertEqual(w.max_wait({"LIVE_NOTES_MAX_WAIT_S": "300"}), 300.0)
+        self.assertEqual(w.max_wait({"LIVE_NOTES_MAX_WAIT_S": "soon"}), 60.0)
+
     def test_missing_link_accepts(self):
         self.assertEqual(self.run_hook(LIVE_NOTES_AGENT_LINK=""), "")
 

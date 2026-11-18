@@ -15,7 +15,7 @@ Never commit your agent link.
 
 ## How it works
 
-- **Hook** (`wait_for_meeting.py`): when Vibe's turn ends, it waits for a meeting line and hands it to Vibe. At most 3 times per turn; a 4th line waits for the loop's next turn.
+- **Hook** (`wait_for_meeting.py`): when Vibe's turn ends, it waits up to 60 s for a meeting line and hands it to Vibe. What you type meanwhile waits at most that long. At most 3 times per turn; a 4th line waits for the loop's next turn.
 - **Loop**: starts a new turn every 30 seconds, so the hook can wait again.
 - **Script** (`live_notes.py`): `join <link>`, `publish <file>`, `chat <text>`, `leave`. One command each.
 - **Skill** (`.vibe/skills/live-notes`): names those commands, starts and stops the loop. No follower, no polling, no guide.

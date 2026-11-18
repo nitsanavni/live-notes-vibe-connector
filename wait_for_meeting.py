@@ -56,6 +56,14 @@ def save_cursor(path, cursor):
         print("live-notes: cannot save cursor: %s" % e, file=sys.stderr)
 
 
+def max_wait(env):
+    """Longest wait in one hook run. Typed text waits meanwhile; the loop re-arms the hook."""
+    try:
+        return float(env.get("LIVE_NOTES_MAX_WAIT_S", "60"))
+    except ValueError:
+        return 60.0
+
+
 def wakes_used(path, turn):
     """Wakes already given in this turn: the file holds '<turn id> <count>'."""
     try:
@@ -145,12 +153,9 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
         # Leave the line for the loop's next turn, where a deny counts again.
         log(env, "capped", turn_id=turn)
         return 0
-    try:
-        max_wait = float(env.get("LIVE_NOTES_MAX_WAIT_S", "1500"))
-    except ValueError:
-        max_wait = 1500.0
+    longest = max_wait(env)
     poll = int(env.get("LIVE_NOTES_POLL_S", POLL_S))
-    deadline = clock() + max_wait
+    deadline = clock() + longest
     backoff = 1.0
     cursor = load_cursor(cfile)
 
