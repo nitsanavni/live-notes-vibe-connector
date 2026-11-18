@@ -1,0 +1,7 @@
+[[hooks]]
+name = "live-notes-wait"
+type = "post_agent"
+match = "main"
+command = "python wait_for_meeting.py"
+timeout = 1800.0
+description = "Wait for a Live Notes line, then wake the agent"
