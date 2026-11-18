@@ -1,6 +1,9 @@
 import io
 import json
 import os
+import re
+import shutil
+import subprocess
 import sys
 import tempfile
 import threading
@@ -156,6 +159,21 @@ class T(unittest.TestCase):
         self.assertEqual(w.max_wait({}), 60.0)
         self.assertEqual(w.max_wait({"LIVE_NOTES_MAX_WAIT_S": "300"}), 300.0)
         self.assertEqual(w.max_wait({"LIVE_NOTES_MAX_WAIT_S": "soon"}), 60.0)
+
+    @unittest.skipUnless(os.path.exists("/bin/sh"), "needs a POSIX shell")
+    def test_hook_command_runs_with_python3_only(self):
+        here = os.path.dirname(os.path.abspath(__file__))
+        cmd = re.search(r'^command = "(.*)"', open(os.path.join(here, ".vibe", "hooks.toml")).read(), re.M).group(1)
+        bin_dir = os.path.join(self.dir, "bin")
+        os.makedirs(bin_dir)
+        os.symlink(shutil.which("python3") or sys.executable, os.path.join(bin_dir, "python3"))
+        os.makedirs(os.path.dirname(self.cf))
+        open(self.cf, "w").write("c5")
+        self.feed.responses = [(200, {"next": "c6", "events": [speech(6, text="hi")]})]
+        env = dict(self.env, PATH=bin_dir)
+        p = subprocess.run(["/bin/sh", "-c", cmd], cwd=here, env=env, input="{}", capture_output=True,
+                           text=True, timeout=30)
+        self.assertEqual(json.loads(p.stdout)["decision"], "deny", p.stderr)
 
     def test_missing_link_accepts(self):
         self.assertEqual(self.run_hook(LIVE_NOTES_AGENT_LINK=""), "")

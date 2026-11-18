@@ -11,6 +11,7 @@ A proof of concept. Rough edges: see `TODO.md`.
 3. Say: `Join the meeting with the live-notes skill. Agent link: <your link>`
 4. To leave, say: `Stop following the meeting.`
 
+`.vibe/config.toml` lets Vibe run `python live_notes.py` without asking; nothing else is added.
 Never commit your agent link.
 
 ## How it works
