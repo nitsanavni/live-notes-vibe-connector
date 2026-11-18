@@ -21,7 +21,9 @@ class Stop(Exception):
 
 
 def get(link, name, after, wait, timeout):
-    q = {"name": name, "wait": str(wait)}
+    q = {"name": name}
+    if wait is not None:
+        q["wait"] = str(wait)
     if after:
         q["after"] = after
     url = link.rstrip("/") + "/feed?" + urllib.parse.urlencode(q)
@@ -120,7 +122,8 @@ def run(env=None, sleep=time.sleep, clock=time.monotonic):
                 raise Stop()
             try:
                 if cursor is None:
-                    d = get(link, name, None, 1, 30)
+                    # Boot call: no wait, the server rejects wait without after.
+                    d = get(link, name, None, None, 30)
                     if d.get("ended_at"):
                         raise Stop()
                     cursor = d.get("cursor") or d.get("next")
