@@ -57,6 +57,7 @@ svg text { fill: var(--fg); font-family: inherit; }
 .c-note { fill: var(--note); stroke: var(--note-s); stroke-width: 1.5; }
 .grp-pc { fill: var(--pc-g); stroke: var(--pc-s); stroke-width: 1.5; stroke-dasharray: 2 0; }
 .grp-ln { fill: var(--ln-g); stroke: var(--ln-s); stroke-width: 1.5; }
+.grp-n { fill: var(--bg); stroke: var(--box-s); stroke-width: 1.5; }
 .rep { fill: none; stroke: var(--hook-s); stroke-width: 2.5; stroke-dasharray: 9 6; }
 .rep-tab { fill: var(--hook); stroke: var(--hook-s); stroke-width: 2; }
 .arrow.mut { stroke: var(--loop-s); }

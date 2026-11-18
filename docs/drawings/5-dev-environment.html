@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark"><title>Vibe and Live Notes: The development environment</title><link rel="stylesheet" href="style.css"></head><body><main><nav class="nav"><a href="4-leave.html">← 4. Leave</a><a href="index.html">Index</a><span></span></nav><h1>5. The development environment</h1><p class="lead">Where the work runs today, and where it should run next.</p>
+<h2>Today</h2><div class="fig"><svg style="min-width:820px" viewBox="0 0 1100 670" role="img" aria-label="Today: Nitsan and Peter, the Live Notes service, Claude in the cloud, GitHub and Peter's machine, with arrows for who talks to what."><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path class="head" d="M0,0 L10,5 L0,10 z"/></marker></defs><title>The development environment today</title>
+<rect class="grp-n" x="20" y="40" width="280" height="400" rx="22"/><text x="42" y="70" class="g start">Nitsan's computer</text>
+<rect class="grp-ln" x="400" y="40" width="240" height="400" rx="22"/><text x="422" y="70" class="g start">Live Notes service</text>
+<rect class="grp-n" x="770" y="40" width="310" height="400" rx="22"/><text x="792" y="70" class="g start">Cloud: Claude Code</text>
+<rect class="grp-pc" x="20" y="500" width="670" height="140" rx="22"/><text x="130" y="530" class="g start">Peter's machine (Windows) = production</text>
+<rect class="box" x="70" y="103" width="180" height="50" rx="25"/><text x="160" y="133.5" class="h mid">Nitsan</text>
+<rect class="box" x="60" y="230" width="200" height="60" rx="14"/><text x="160" y="257" class="h mid">browser</text><text x="160" y="277" class="s mid">Live Notes meeting</text>
+<rect class="box" x="60" y="350" width="200" height="56" rx="14"/><text x="160" y="383.5" class="h mid">Google Meet call</text>
+<rect class="c-ln" x="430" y="100" width="180" height="56" rx="14"/><text x="520" y="133.5" class="h mid">pages</text>
+<rect class="c-ln" x="430" y="232" width="180" height="56" rx="14"/><text x="520" y="265.5" class="h mid">meeting feed</text>
+<rect class="box" x="835" y="232" width="200" height="56" rx="14"/><text x="935" y="265.5" class="h mid">Claude</text>
+<rect class="box" x="835" y="340" width="200" height="56" rx="14"/><text x="935" y="373.5" class="h mid">checkout of the repo</text>
+<path class="box" d="M830,557 a105,10 0 0 1 210,0 V593 a105,10 0 0 1 -210,0 Z"/><path class="arrow" style="stroke:var(--box-s)" d="M830,557 a105,10 0 0 0 210,0"/><text x="935" y="585" class="h mid">GitHub: shared repo</text>
+<rect class="box" x="70" y="550" width="180" height="50" rx="25"/><text x="160" y="580.5" class="h mid">Peter</text>
+<rect class="c-pc" x="400" y="547" width="260" height="56" rx="14"/><text x="530" y="580.5" class="h mid">Vibe + hook + skill</text>
+<path class="arrow" marker-end="url(#ah)" d="M160,153 V228"/><text x="172" y="198" class="m start">speaks</text>
+<path class="arrow" marker-end="url(#ah)" d="M160,348 V292"/><text x="172" y="326" class="m start">app sound</text>
+<path class="arrow" marker-end="url(#ah)" d="M100,550 V408"/><text x="112" y="480" class="m start">speaks, over the call</text>
+<path class="arrow" marker-end="url(#ah)" d="M262,260 H428"/><text x="345" y="250" class="m mid">all lines</text>
+<path class="arrow" marker-end="url(#ah)" d="M612,260 H833"/><text x="705" y="250" class="m mid">lines</text>
+<path class="arrow" marker-end="url(#ah)" d="M935,230 V128 H612"/><text x="705" y="118" class="m mid">answers</text>
+<path class="arrow" marker-end="url(#ah)" d="M428,128 H252"/><text x="350" y="118" class="m mid">read</text>
+<path class="arrow" marker-end="url(#ah)" d="M935,290 V338"/><text x="947" y="320" class="m start">writes</text>
+<path class="arrow" marker-end="url(#ah)" d="M935,398 V545"/><text x="947" y="480" class="m start">push</text>
+<path class="arrow" marker-end="url(#ah)" d="M828,575 H662"/><text x="745" y="565" class="m mid">pull, by hand</text>
+<path class="arrow" marker-end="url(#ah)" d="M252,575 H398"/><text x="325" y="565" class="m mid">runs, watches</text>
+<path class="arrow" marker-end="url(#ah)" d="M530,545 V442"/><text x="542" y="478" class="m start">joins, answers</text>
+</svg></div><p class="hint">On a narrow screen, scroll the drawing sideways.</p>
+<h2>Today's feedback loop</h2><div class="fig"><svg style="min-width:640px" viewBox="0 0 900 470" role="img" aria-label="The feedback loop today: five steps in a ring. Claude writes and pushes. Peter pulls and runs it in Vibe. Peter says aloud what he sees. The call, app sound and Live Notes carry it. Claude reads it as text. Then it starts again. Steps two and three are done by a person."><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path class="head" d="M0,0 L10,5 L0,10 z"/></marker></defs><title>The feedback loop today</title>
+<rect class="box" x="335" y="48" width="230" height="64" rx="14"/><text x="450" y="77" class="h mid">Claude writes</text><text x="450" y="99" class="h mid">and pushes</text><circle class="badge" cx="339" cy="52" r="11"/><text x="339" y="56.5" class="badge-t">1</text>
+<rect class="c-hook" x="649" y="165" width="230" height="64" rx="14"/><text x="764" y="194" class="h mid">Peter pulls and runs</text><text x="764" y="216" class="h mid">it in Vibe</text><circle class="badge" cx="653" cy="169" r="11"/><text x="653" y="173.5" class="badge-t">2</text>
+<rect class="c-hook" x="529" y="356" width="230" height="64" rx="14"/><text x="644" y="385" class="h mid">Peter says aloud</text><text x="644" y="407" class="h mid">what he sees</text><circle class="badge" cx="533" cy="360" r="11"/><text x="533" y="364.5" class="badge-t">3</text>
+<rect class="c-ln" x="141" y="356" width="230" height="64" rx="14"/><text x="256" y="385" class="h mid">the call, app sound,</text><text x="256" y="407" class="h mid">Live Notes</text><circle class="badge" cx="145" cy="360" r="11"/><text x="145" y="364.5" class="badge-t">4</text>
+<rect class="box" x="21" y="165" width="230" height="64" rx="14"/><text x="136" y="194" class="h mid">Claude reads</text><text x="136" y="216" class="h mid">it as text</text><circle class="badge" cx="25" cy="169" r="11"/><text x="25" y="173.5" class="badge-t">5</text>
+<path class="arrow" marker-end="url(#ah)" d="M567,80 Q764,80 764,163"/>
+<path class="arrow" marker-end="url(#ah)" d="M800,231 C805,320 805,388 761,388"/>
+<path class="arrow" marker-end="url(#ah)" d="M527,388 H373"/>
+<path class="arrow" marker-end="url(#ah)" d="M139,388 C70,388 80,300 100,231"/>
+<path class="arrow" marker-end="url(#ah)" d="M70,163 C70,80 200,80 333,80"/>
+<rect class="c-hook" x="360" y="196" width="22" height="16" rx="5"/><text x="392" y="210" class="s start">a person does this step</text><rect class="box" x="360" y="226" width="22" height="16" rx="5"/><text x="392" y="240" class="s start">Claude</text><rect class="c-ln" x="360" y="256" width="22" height="16" rx="5"/><text x="392" y="270" class="s start">the meeting</text>
+</svg></div><p class="hint">On a narrow screen, scroll the drawing sideways.</p><p>Claude never saw Vibe run. Each round took minutes.</p>
+<h2>Next</h2><div class="fig"><svg style="min-width:800px" viewBox="0 0 1060 570" role="img" aria-label="Next: Claude in the cloud runs Vibe in tmux as a test, which uses the Mistral API and joins a Live Notes test meeting. Claude pushes to GitHub when it works, and Peter's Vibe, the production one, pulls."><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path class="head" d="M0,0 L10,5 L0,10 z"/></marker></defs><title>The development environment next</title>
+<rect class="grp-n" x="20" y="40" width="600" height="360" rx="22"/><text x="42" y="68" class="g start">Cloud: Claude Code</text>
+<rect class="box" x="50" y="200" width="200" height="56" rx="14"/><text x="150" y="233.5" class="h mid">Claude</text>
+<rect class="box" x="360" y="80" width="220" height="56" rx="14"/><text x="470" y="113.5" class="h mid">checkout of the repo</text>
+<rect class="c-loop" x="360" y="300" width="220" height="56" rx="14"/><text x="470" y="325" class="h mid">Vibe in tmux</text><text x="470" y="345" class="s mid">(test)</text>
+<rect class="c-ln" x="50" y="470" width="280" height="56" rx="14"/><text x="190" y="503.5" class="h mid">Live Notes: a test meeting</text>
+<rect class="box" x="820" y="300" width="210" height="56" rx="14"/><text x="925" y="333.5" class="h mid">Mistral API (key)</text>
+<path class="box" d="M820,88 a105,10 0 0 1 210,0 V128 a105,10 0 0 1 -210,0 Z"/><path class="arrow" style="stroke:var(--box-s)" d="M820,88 a105,10 0 0 0 210,0"/><text x="925" y="118" class="h mid">GitHub: shared repo</text>
+<rect class="c-pc" x="820" y="200" width="210" height="70" rx="14"/><text x="925" y="232" class="h mid">Peter's Vibe</text><text x="925" y="252" class="s mid">= production</text>
+<path class="arrow" marker-end="url(#ah)" d="M150,200 V108 H358"/><text x="254" y="98" class="m mid">writes</text>
+<path class="arrow" marker-end="url(#ah)" d="M470,138 V298"/><text x="482" y="222" class="m start">runs in</text>
+<path class="arrow" marker-end="url(#ah)" d="M200,256 V328 H358"/><text x="212" y="296" class="m start">drives and</text><text x="212" y="314" class="m start">reads the screen</text>
+<path class="arrow" marker-end="url(#ah)" d="M582,328 H818"/>
+<path class="arrow" marker-end="url(#ah)" d="M470,358 V498 H332"/><text x="482" y="440" class="m start">joins</text>
+<path class="arrow" marker-end="url(#ah)" d="M90,258 V468"/><text x="102" y="432" class="m start">speaks as a test person,</text><text x="102" y="452" class="m start">reads the page</text>
+<path class="arrow" marker-end="url(#ah)" d="M582,108 H818"/><text x="720" y="98" class="m mid">push when it works</text>
+<path class="arrow" marker-end="url(#ah)" d="M925,140 V198"/><text x="937" y="175" class="m start">pull</text>
+<rect class="c-loop" x="640" y="490" width="22" height="16" rx="5"/><text x="672" y="504" class="s start">test</text><rect class="c-pc" x="740" y="490" width="22" height="16" rx="5"/><text x="772" y="504" class="s start">production</text><rect class="c-ln" x="880" y="490" width="22" height="16" rx="5"/><text x="912" y="504" class="s start">Live Notes</text>
+</svg></div><p class="hint">On a narrow screen, scroll the drawing sideways.</p><p>Claude closes the loop alone, in seconds. You two test by hand at the end, to see it yourselves. Missing today: the Mistral key.</p>
+<nav class="nav"><a href="4-leave.html">← 4. Leave</a><a href="index.html">Index</a><span></span></nav></main></body></html>
