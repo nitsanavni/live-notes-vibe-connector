@@ -11,7 +11,9 @@ Things we may need. Not ordered, not promised. Add freely.
   following a meeting, not all the time (Nitsan). Today it stays quiet when
   there is no `.vibe/agent-link` file or the meeting has ended, but there is no
   switch.
-- Turn the loop on and off together with the hook.
+- Turn the loop on and off together with the hook. First try: the skill
+  `live-notes` (start writes the link file and schedules the loop with the
+  `cron` tool; stop cancels the loop and deletes the link file). Try it in Vibe.
 - Combine the invitation with the setup: Vibe knows nothing about Live Notes
   until it has read the agent link. `loop-prompt.md` has a first try.
 - The agent link in the repo: Nitsan wanted it committed for now ("it's not a

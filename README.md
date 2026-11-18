@@ -19,6 +19,10 @@ Nothing to copy: the hook is already in this repo, in `.vibe/hooks.toml`.
 
 Python 3 is needed (standard library only). Optional settings: `LIVE_NOTES_AGENT_NAME` (default `vibe-agent`), `LIVE_NOTES_CURSOR_FILE` (default `.vibe/live-notes.cursor`), `LIVE_NOTES_MAX_WAIT_S` (default 1500).
 
+## The skill
+
+`.vibe/skills/live-notes/SKILL.md` turns the meeting on and off from inside Vibe: say "join the meeting" with your agent link (or `/live-notes`), and "stop following" to end. It writes the link file, joins, and starts the loop with Vibe's `cron` tool; stopping cancels the loop and deletes the link file, which also switches the hook off. Not yet tried in Vibe.
+
 ## How it behaves
 
 When the agent ends a turn, the hook waits. If a person's line arrives, it returns the lines and the agent takes another turn. If nothing arrives in 25 minutes, it exits quietly and the turn ends.
